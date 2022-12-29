@@ -4,6 +4,8 @@ import pandas as pd
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+
+# collaborative filtering works perfectly on local
 # from surprise import Reader, Dataset, SVD
 
 
@@ -34,11 +36,11 @@ def content(books):
 
 
 def simple_recommender(books, n=5):
-    c = books['ratings_count']
-    cm = books['ratings_count'].quantile(0.95)
-    r = books['average_rating']
-    rm = books['average_rating'].median()
-    score = (r * c + rm * cm) / (c + cm)
+    v = books['ratings_count']
+    m = books['ratings_count'].quantile(0.95)
+    R = books['average_rating']
+    C = books['average_rating'].median()
+    score = (v / (v + m) * R) + (m / (m + v) * C)
     books['score'] = score
     qualified = books.sort_values('score', ascending=False)
     return qualified[['book_id', 'title', 'authors', 'score']].head(n)
@@ -59,17 +61,17 @@ def improved_recommendation(books, title, n=5):
     idx = indices[title]
     sim_scores = list(enumerate(cosine_sim[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-    sim_scores = sim_scores[1:20]
+    sim_scores = sim_scores[1:26]
     book_indices = [i[0] for i in sim_scores]
     books2 = books.iloc[book_indices][['book_id', 'title', 'authors', 'average_rating', 'ratings_count']]
 
-    c = books2['ratings_count']
-    cm = books2['ratings_count'].median()
-    r = books2['average_rating']
-    rm = books2['average_rating'].median()
-    books2['weighted_rating'] = (r * c + rm * cm) / (c + cm)
+    v = books2['ratings_count']
+    m = books2['ratings_count'].quantile(0.75)  # here the minimum rating is quantile 75
+    R = books2['average_rating']
+    C = books2['average_rating'].median()
+    books2['weighted_rating'] = (v / (v + m) * R) + (m / (m + v) * C)
 
-    high_rating = books2[books2['ratings_count'] >= cm]
+    high_rating = books2[books2['ratings_count'] >= m]
     high_rating = high_rating.sort_values('weighted_rating', ascending=False)
 
     return high_rating[['book_id', 'title', 'authors', 'average_rating', 'ratings_count']].head(n)
