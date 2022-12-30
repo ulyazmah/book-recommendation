@@ -12,17 +12,17 @@ The main objective of this project is to develop book recommendation systems by 
 ## Goals
 ### A. Exploratory Data Analysis 
 In this part, I explore the data to get understanding about the dataset. There are several deep dive questions should be answered:
-1. How is the distribution of the rating for the book? 
-2. is the distribution of the average rating per user? 
+1. How is the rating for all books distributed? 
+2. How is the average rating per user distributed?
 3. How many ratings does a book usually get? 
 4. How many ratings does a user usually give? 
-5. Does the number of reviews affect ratings? 
+5. Does the ratings count affect average rating?
 6. Which book has the highest rating and which book has the most ratings? 
 7. How is the relationship between the number of ratings and the average rating? 
 8. Who is the author with most books? 
 9. Who is the most popular author? 
 10. Who is the author that has good ratings book? 
-11. How is the relationship between the number of pages and the year the book was published? 
+11. How is the relationship between the number of pages and the year the book was published?
 12. What genre dominates the dataset?
 	
 ### B. Modelling 
